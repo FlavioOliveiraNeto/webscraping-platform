@@ -1,0 +1,17 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS", 5) %>
+
+development:
+  <<: *default
+  database: webscraping_manager_development
+
+test:
+  <<: *default
+  database: webscraping_manager_test
+  url: <%= nil %>  
+
+production:
+  <<: *default
+  database: webscraping_manager_production
