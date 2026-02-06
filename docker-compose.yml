@@ -1,0 +1,101 @@
+version: "3.3"
+
+services:
+  # Infraestrutura
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+
+  # Microsserviços
+
+  # Auth Service
+  auth-service:
+    build: ./auth-service
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails db:create db:migrate && bundle exec rails s -b '0.0.0.0'"
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@postgres/auth_service_production
+      JWT_SECRET: minha_chave_secreta_compartilhada_123
+    depends_on:
+      - postgres
+    ports:
+      - "3001:3000"
+
+  # Notification Service
+  notification-service:
+    build: ./notification-service
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails db:create db:migrate && bundle exec rails s -b '0.0.0.0'"
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@postgres/notification_service_production
+    depends_on:
+      - postgres
+    ports:
+      - "3002:3000"
+
+  # Webscraping Manager
+  webscraping-manager:
+    build: ./webscraping-manager
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails db:create db:migrate && bundle exec rails s -b '0.0.0.0'"
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@postgres/webscraping_manager_production
+      REDIS_URL: redis://redis:6379/0
+      AUTH_SERVICE_URL: http://auth-service:3000
+      PROCESSING_SERVICE_URL: http://processing-service:3000
+      NOTIFICATION_SERVICE_URL: http://notification-service:3000
+      JWT_SECRET: minha_chave_secreta_compartilhada_123
+    depends_on:
+      - postgres
+      - redis
+      - auth-service
+    ports:
+      - "3000:3000"
+
+  # Worker do Manager
+  manager-worker:
+    build: ./webscraping-manager
+    command: bundle exec sidekiq
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@postgres/webscraping_manager_production
+      REDIS_URL: redis://redis:6379/0
+      PROCESSING_SERVICE_URL: http://processing-service:3000
+      NOTIFICATION_SERVICE_URL: http://notification-service:3000
+      JWT_SECRET: minha_chave_secreta_compartilhada_123
+    depends_on:
+      - webscraping-manager
+
+  # Processing Service
+  processing-service:
+    build: ./processing-service
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails db:create db:migrate && bundle exec rails s -b '0.0.0.0'"
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@postgres/processing_service_production
+      REDIS_URL: redis://redis:6379/0
+      NOTIFICATION_SERVICE_URL: http://notification-service:3000
+    depends_on:
+      - postgres
+      - redis
+
+  # Worker do Processing
+  processing-worker:
+    build: ./processing-service
+    command: bundle exec sidekiq
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@postgres/processing_service_production
+      REDIS_URL: redis://redis:6379/0
+      NOTIFICATION_SERVICE_URL: http://notification-service:3000
+    depends_on:
+      - processing-service
+
+volumes:
+  pgdata:

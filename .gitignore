@@ -1,0 +1,21 @@
+# Geral
+.env
+.env.*
+.DS_Store
+*.log
+
+# Ruby / Rails
+.bundle
+vendor/bundle
+tmp/
+log/
+
+# Node (se existir)
+node_modules/
+
+# Docker
+*.pid
+
+# IDE
+.vscode/
+.idea/
