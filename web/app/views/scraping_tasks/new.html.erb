@@ -1,0 +1,17 @@
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <h2 class="mb-4">Nova Tarefa de Scraping</h2>
+
+    <%= form_with url: scraping_tasks_path, method: :post do |f| %>
+      <div class="mb-3">
+        <%= f.label :source_url, "URL de Origem", class: "form-label" %>
+        <%= f.url_field :source_url, class: "form-control",
+            placeholder: "https://www.webmotors.com.br/...", required: true, autofocus: true %>
+        <div class="form-text">Informe a URL do Webmotors para fazer scraping.</div>
+      </div>
+
+      <%= f.submit "Criar Tarefa", class: "btn btn-primary" %>
+      <%= link_to "Cancelar", scraping_tasks_path, class: "btn btn-outline-secondary ms-2" %>
+    <% end %>
+  </div>
+</div>

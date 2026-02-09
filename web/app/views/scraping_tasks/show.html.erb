@@ -1,0 +1,26 @@
+<div class="mb-4">
+  <%= link_to "&larr; Voltar para Tarefas".html_safe, scraping_tasks_path, class: "text-decoration-none" %>
+</div>
+
+<h2>Tarefa #<%= @task["id"] %></h2>
+
+<div class="card mt-3">
+  <div class="card-body">
+    <dl class="row mb-0">
+      <dt class="col-sm-3">Status</dt>
+      <dd class="col-sm-9">
+        <span class="badge bg-<%= status_badge_class(@task['status']) %>">
+          <%= @task["status"] %>
+        </span>
+      </dd>
+
+      <dt class="col-sm-3">URL de Origem</dt>
+      <dd class="col-sm-9">
+        <%= link_to @task["source_url"], @task["source_url"], target: "_blank", rel: "noopener" %>
+      </dd>
+
+      <dt class="col-sm-3">Criado em</dt>
+      <dd class="col-sm-9"><%= format_datetime(@task["created_at"]) %></dd>
+    </dl>
+  </div>
+</div>

@@ -97,5 +97,20 @@ services:
     depends_on:
       - processing-service
 
+  # Web Frontend
+  web:
+    build: ./web
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -b '0.0.0.0'"
+    environment:
+      AUTH_SERVICE_URL: http://auth-service:3000
+      MANAGER_SERVICE_URL: http://webscraping-manager:3000
+      SECRET_KEY_BASE: 3b5f8c2a9d1e4f7a6b0c8d2e5f1a3b7c9d4e6f8a0b2c5d7e9f1a3b5c7d9e0f2a4b6c8d0e2f4a6b8c0d2e4f6a8b0c2d4e6f8a0b2c4d6e8f0a2b4c6d8e0f2a4b
+      RAILS_ENV: development
+    depends_on:
+      - auth-service
+      - webscraping-manager
+    ports:
+      - "8080:3000"
+
 volumes:
   pgdata:

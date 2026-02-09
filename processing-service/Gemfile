@@ -58,4 +58,3 @@ gem "nokogiri", "~> 1.19"
 
 gem "rspec-rails", "~> 8.0", groups: [:development, :test]
 gem "webmock", "~> 3.26", groups: [:development, :test]
-gem 'ferrum'
