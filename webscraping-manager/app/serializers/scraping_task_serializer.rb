@@ -6,6 +6,8 @@ class ScrapingTaskSerializer
   def as_json(_options = {})
     data = {
       id: @task.id,
+      title: @task.title,
+      description: @task.description,
       source_url: @task.source_url,
       status: @task.status,
       created_at: @task.created_at,

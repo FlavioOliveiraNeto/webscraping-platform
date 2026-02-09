@@ -18,11 +18,11 @@ module Manager
       { success: false, error: "Manager service unavailable" }
     end
 
-    def self.create_task(token, source_url)
+    def self.create_task(token, source_url, title, description)
       response = connection.post("/api/scraping_tasks") do |req|
         req.headers["Authorization"] = "Bearer #{token}"
         req.headers["Content-Type"] = "application/json"
-        req.body = { source_url: source_url }.to_json
+        req.body = { source_url: source_url, title: title, description: description }.to_json
       end
 
       if response.success?

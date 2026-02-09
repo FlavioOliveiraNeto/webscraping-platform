@@ -8,15 +8,15 @@ module Api
     def create
       task = ScrapingTask.new(
         source_url: params[:source_url],
+        title: params[:title],             
+        description: params[:description], 
         status: :pending,
         user_id: current_user['user_id']
       )
 
       if task.save
         EnqueueScrapingJob.perform_later(task.id)
-        
         Notifications::Client.task_created(task)
-
         render json: ScrapingTaskSerializer.new(task).as_json, status: :created
       else
         render json: { errors: task.errors.full_messages }, status: :unprocessable_entity

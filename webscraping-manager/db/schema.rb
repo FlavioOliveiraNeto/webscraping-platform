@@ -10,15 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_06_164755) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_09_192741) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
   create_table "scraping_tasks", force: :cascade do |t|
+    t.string "brand"
     t.datetime "created_at", null: false
+    t.text "description"
+    t.text "error_message"
+    t.string "model"
     t.boolean "notification_sent"
+    t.string "price"
     t.string "source_url"
     t.integer "status"
+    t.string "title"
     t.datetime "updated_at", null: false
     t.integer "user_id"
   end

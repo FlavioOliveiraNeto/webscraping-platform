@@ -6,7 +6,7 @@ RSpec.describe 'ScrapingTasks authentication', type: :request do
   it 'returns unauthorized if token is invalid' do
     post '/api/scraping_tasks',
       headers: { 'Authorization' => "Bearer #{token}" },
-      params: { source_url: 'https://example.com' }
+      params: { source_url: 'https://example.com', title: 'Test Task', description: 'Test Description' }
 
     expect(response).to have_http_status(:unauthorized)
   end

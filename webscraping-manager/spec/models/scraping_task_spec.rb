@@ -4,6 +4,7 @@ RSpec.describe ScrapingTask, type: :model do
   subject { build(:scraping_task) }
 
   describe 'validations' do
+    it { should validate_presence_of(:title) }
     it { should validate_presence_of(:source_url) }
     it { should validate_presence_of(:user_id) }
     

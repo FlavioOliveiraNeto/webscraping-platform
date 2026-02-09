@@ -14,6 +14,16 @@
         </span>
       </dd>
 
+      <dt class="col-sm-3">Título da Tarefa</dt>
+      <dd class="col-sm-9">
+        <%= @task["title"] %>
+      </dd>
+
+      <dt class="col-sm-3">Descrição</dt>
+      <dd class="col-sm-9">
+        <%= @task["description"] %>
+      </dd>
+
       <dt class="col-sm-3">URL de Origem</dt>
       <dd class="col-sm-9">
         <%= link_to @task["source_url"], @task["source_url"], target: "_blank", rel: "noopener" %>

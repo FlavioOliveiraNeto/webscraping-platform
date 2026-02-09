@@ -16,7 +16,7 @@ class ScrapingTasksController < ApplicationController
   end
 
   def create
-    result = Manager::Client.create_task(current_token, params[:source_url])
+    result = Manager::Client.create_task(current_token, params[:source_url], params[:title], params[:description])
 
     if result[:success]
       flash[:notice] = "Tarefa de scraping criada com sucesso."

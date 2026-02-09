@@ -2,6 +2,8 @@ module Notifications
   class Client
     def self.task_created(task)
       data = {
+        title: task.title,
+        description: task.description,
         source_url: task.source_url,
         created_at: task.created_at
       }

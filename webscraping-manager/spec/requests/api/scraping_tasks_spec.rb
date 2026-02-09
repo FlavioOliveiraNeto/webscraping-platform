@@ -15,7 +15,7 @@ RSpec.describe 'Api::ScrapingTasks', type: :request do
   describe 'POST /api/scraping_tasks' do
     context 'when authorized' do
       let(:headers) { { 'Authorization' => "Bearer #{valid_token}" } }
-      let(:valid_params) { { source_url: 'https://www.webmotors.com.br/comprar/carro' } }
+      let(:valid_params) { { source_url: 'https://www.webmotors.com.br/comprar/carro', title: 'Test Task', description: 'Test Description' } }
 
       it 'creates a task and enqueues a job' do
         expect {
@@ -34,7 +34,7 @@ RSpec.describe 'Api::ScrapingTasks', type: :request do
       end
 
       it 'returns error for invalid URL' do
-        post '/api/scraping_tasks', params: { source_url: 'google.com' }, headers: headers
+        post '/api/scraping_tasks', params: { source_url: 'google.com', title: 'Test Task', description: 'Test Description'}, headers: headers
         
         expect(response).to have_http_status(:unprocessable_entity)
         expect(JSON.parse(response.body)['errors']).to include('Source url must be a valid Webmotors URL')

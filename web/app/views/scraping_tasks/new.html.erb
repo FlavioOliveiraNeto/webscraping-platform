@@ -4,6 +4,16 @@
 
     <%= form_with url: scraping_tasks_path, method: :post do |f| %>
       <div class="mb-3">
+        <%= f.label :title, "Título da Tarefa", class: "form-label" %>
+        <%= f.text_field :title, required: true, class: "form-control" %>
+      </div>
+
+      <div class="mb-3">
+        <%= f.label :description, "Descrição (Opcional)", class: "form-label" %>
+        <%= f.text_area :description, rows: 3, class: "form-control" %>
+      </div>
+
+      <div class="mb-3">
         <%= f.label :source_url, "URL de Origem", class: "form-label" %>
         <%= f.url_field :source_url, class: "form-control",
             placeholder: "https://www.webmotors.com.br/...", required: true, autofocus: true %>
