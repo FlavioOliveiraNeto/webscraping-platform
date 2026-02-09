@@ -10,6 +10,8 @@
         <tr>
           <th>ID</th>
           <th>URL</th>
+          <th>Marca</th>
+          <th>Modelo</th>
           <th>Status</th>
           <th>Criado em</th>
           <th></th>
@@ -19,7 +21,9 @@
         <% @tasks.each do |task| %>
           <tr>
             <td><%= task["id"] %></td>
-            <td><%= truncate(task["source_url"].to_s, length: 60) %></td>
+            <td><%= truncate(task["source_url"].to_s, length: 50) %></td>
+            <td><%= task["brand"].presence || "-" %></td>
+            <td><%= task["model"].presence || "-" %></td>
             <td>
               <span class="badge bg-<%= status_badge_class(task['status']) %>">
                 <%= task["status"] %>

@@ -24,3 +24,35 @@
     </dl>
   </div>
 </div>
+
+<% if @task["status"] == "completed" && @task["brand"].present? %>
+  <div class="card mt-3 border-success">
+    <div class="card-header bg-success text-white">
+      Resultado do Scraping
+    </div>
+    <div class="card-body">
+      <dl class="row mb-0">
+        <dt class="col-sm-3">Marca</dt>
+        <dd class="col-sm-9"><%= @task["brand"] %></dd>
+
+        <dt class="col-sm-3">Modelo</dt>
+        <dd class="col-sm-9"><%= @task["model"] %></dd>
+
+        <dt class="col-sm-3">Preco</dt>
+        <dd class="col-sm-9"><%= @task["price"] %></dd>
+      </dl>
+    </div>
+  </div>
+<% end %>
+
+<% if @task["status"] == "failed" && @task["error_message"].present? %>
+  <div class="alert alert-danger mt-3">
+    <strong>Erro no scraping:</strong> <%= @task["error_message"] %>
+  </div>
+<% end %>
+
+<% if @task["status"] == "pending" || @task["status"] == "processing" %>
+  <div class="alert alert-info mt-3">
+    Tarefa em andamento. Atualize a pagina para ver o resultado.
+  </div>
+<% end %>

@@ -14,13 +14,16 @@ class ScrapingJob < ApplicationJob
     )
 
     Notifications::Client.task_completed(task_id, vehicle)
-    
-    Manager::Client.update_status(task_id, 'completed')
+
+    Manager::Client.update_status(task_id, 'completed',
+      brand: result[:brand],
+      model: result[:model],
+      price: result[:price]
+    )
 
   rescue => e
     Rails.logger.error("Scraping failed: #{e.message}")
     Notifications::Client.task_failed(task_id, e.message)
-    # --- NOVO: Avisa o Manager que Falhou ---
-    Manager::Client.update_status(task_id, 'failed')
+    Manager::Client.update_status(task_id, 'failed', error_message: e.message)
   end
 end
