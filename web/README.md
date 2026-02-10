@@ -1,8 +1,5 @@
 ### Web Frontend
 
-````markdown
-# Web Frontend
-
 Interface gráfica desenvolvida em **Ruby on Rails 8 (Fullstack)** utilizando **Bootstrap 5**.
 
 ## Visão Geral
@@ -29,4 +26,3 @@ Testes de Request e System (se aplicável) para garantir a integração com os s
 ```bash
 docker-compose exec web bundle exec rspec
 ```
-````
