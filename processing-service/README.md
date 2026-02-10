@@ -1,7 +1,5 @@
 ### Processing Service
 
-# Processing Service (Worker)
-
 Microsserviço responsável pela execução "pesada" do sistema: acessar a URL alvo, extrair os dados do veículo e reportar o resultado.
 
 ## Estratégia de Scraping (Smart Extraction)
