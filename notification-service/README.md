@@ -1,6 +1,5 @@
 ### Notification Service
 
-````markdown
 # Notification Service
 
 Serviço de auditoria e registro de eventos. Ele atua como um "Observer" do sistema, armazenando logs de ações importantes para histórico.
@@ -23,4 +22,3 @@ O sistema armazena payload JSON para os seguintes eventos:
 ```bash
 docker-compose exec notification-service bundle exec rspec
 ```
-````
