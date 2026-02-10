@@ -1,34 +1,41 @@
 FROM ruby:3.4.8
 
-# Instala dependências do sistema (Postgres client + build tools)
 RUN apt-get update -qq && apt-get install -y \
+    curl \
+    gnupg \
+    ca-certificates \
+    --no-install-recommends
+
+RUN curl -fsSL https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg && \
+    echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" \
+    > /etc/apt/sources.list.d/google-chrome.list
+
+RUN apt-get update -qq && apt-get install -y \
+    google-chrome-stable \
+    fonts-liberation \
     build-essential \
     libpq-dev \
-    curl \
-    chromium \
-    chromium-driver \
     libnss3 \
+    libatk-bridge2.0-0 \
+    libx11-xcb1 \
+    libxcb-dri3-0 \
+    libgbm1 \
     libfontconfig1 \
     libfreetype6 \
     libharfbuzz0b \
-    ca-certificates \
     fonts-freefont-ttf \
-    --no-install-recommends
+    --no-install-recommends && \
+    rm -rf /var/lib/apt/lists/*
 
-# Define diretório de trabalho
 WORKDIR /app
 
-# Copia Gemfile antes do código
 COPY Gemfile Gemfile.lock ./
 RUN bundle install
 
-# Copia o restante do código
 COPY . .
 
-# Expõe a porta (será trocada pelo Compose)
 EXPOSE 3000
 
-# Script de entrada para corrigir problema de server.pid
 COPY entrypoint.sh /usr/bin/
 RUN chmod +x /usr/bin/entrypoint.sh
 ENTRYPOINT ["entrypoint.sh"]

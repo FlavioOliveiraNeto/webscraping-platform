@@ -79,6 +79,7 @@ services:
   # Processing Service
   processing-service:
     build: ./processing-service
+    shm_size: 2gb
     command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails db:create db:migrate && bundle exec rails s -b '0.0.0.0'"
     environment:
       DATABASE_URL: postgres://postgres:postgres@postgres/processing_service_production
@@ -91,7 +92,8 @@ services:
   # Worker do Processing
   processing-worker:
     build: ./processing-service
-    command: bundle exec sidekiq
+    shm_size: 2gb
+    command: bundle exec sidekiq -c 2
     environment:
       DATABASE_URL: postgres://postgres:postgres@postgres/processing_service_production
       REDIS_URL: redis://redis:6379/0
