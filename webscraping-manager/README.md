@@ -1,8 +1,5 @@
 ### Webscraping Manager
 
-````markdown
-# Webscraping Manager Service
-
 O núcleo da plataforma. Este microsserviço gerencia o ciclo de vida das tarefas (`ScrapingTask`), orquestra a comunicação com o worker e armazena os resultados finais.
 
 ## Funcionalidades
@@ -37,4 +34,3 @@ O núcleo da plataforma. Este microsserviço gerencia o ciclo de vida das tarefa
 ```bash
 docker-compose exec webscraping-manager bundle exec rspec
 ```
-````
