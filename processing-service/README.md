@@ -1,6 +1,5 @@
 ### Processing Service
 
-````markdown
 # Processing Service (Worker)
 
 Microsserviço responsável pela execução "pesada" do sistema: acessar a URL alvo, extrair os dados do veículo e reportar o resultado.
@@ -40,4 +39,3 @@ Utiliza **VCR** e **WebMock** para garantir que a lógica de extração seja tes
 ```bash
 docker-compose exec processing-service bundle exec rspec
 ```
-````
