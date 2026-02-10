@@ -1,72 +1,110 @@
 require 'rails_helper'
+require 'webmock/rspec'
 
 RSpec.describe Scraper::Webmotors do
+  let(:url) do
+    'https://www.webmotors.com.br/comprar/honda/civic/20-di-e-hev/4-portas/2024/65420521'
+  end
+
+  let(:api_url) do
+    'https://www.webmotors.com.br/api/detail/car/honda/civic/20-di-e-hev/4-portas/2024/65420521'
+  end
+
+  before do
+    WebMock.disable_net_connect!(allow_localhost: true)
+  end
+
   describe '.call' do
-    let(:url) { 'https://www.webmotors.com.br/comprar/honda/civic' }
-    
-    let(:browser) { instance_double(Ferrum::Browser) }
-    let(:network) { double('network') }
-    let(:headers) { double('headers') }
-
-    before do
-      allow(Ferrum::Browser).to receive(:new).and_return(browser)
-      allow(browser).to receive(:headers).and_return(headers)
-      allow(headers).to receive(:add)
-      allow(browser).to receive(:network).and_return(network)
-      allow(network).to receive(:wait_for_idle)
-      allow(browser).to receive(:go_to)
-      allow(browser).to receive(:quit)
-    end
-
-    context 'when page structure is valid' do
-      let(:valid_json) do
+    context 'when API returns valid data (200)' do
+      let(:api_response) do
         {
-          props: {
-            pageProps: {
-              vehicle: {
-                Make: 'Honda',
-                Model: 'Civic',
-                Price: '12000000'
-              }
-            }
-          }
+          make: 'Honda',
+          model: 'Civic',
+          pricing: { price: 189900 }
         }.to_json
       end
 
       before do
-        allow(browser).to receive(:evaluate).with(include('__NEXT_DATA__')).and_return(valid_json)
+        stub_request(:get, api_url)
+          .to_return(status: 200, body: api_response, headers: { 'Content-Type' => 'application/json' })
       end
 
-      it 'extracts brand, model and price correctly' do
+      it 'returns brand, model and price from API' do
         result = described_class.call(url)
 
-        expect(result[:brand]).to eq('Honda')
-        expect(result[:model]).to eq('Civic')
-        expect(result[:price]).to eq('12000000')
+        expect(result).to eq(
+          brand: 'Honda',
+          model: 'Civic',
+          price: 189900
+        )
       end
     end
 
-    context 'when request fails (simulation of connection error)' do
+    context 'when API is blocked (403) and HTML has __NEXT_DATA__' do
+      let(:html_response) do
+        <<~HTML
+          <html>
+            <body>
+              <script id="__NEXT_DATA__">
+                {
+                  "props": {
+                    "pageProps": {
+                      "vehicle": {
+                        "Make": "Honda",
+                        "Model": "Civic",
+                        "Price": "180000"
+                      }
+                    }
+                  }
+                }
+              </script>
+            </body>
+          </html>
+        HTML
+      end
+
       before do
-        allow(browser).to receive(:go_to).and_raise(StandardError, "Net::ReadTimeout")
+        stub_request(:get, api_url).to_return(status: 403)
+
+        stub_request(:get, url)
+          .to_return(status: 200, body: html_response)
+      end
+
+      it 'falls back to HTML scraping successfully' do
+        result = described_class.call(url)
+
+        expect(result).to eq(
+          brand: 'Honda',
+          model: 'Civic',
+          price: '180000'
+        )
+      end
+    end
+
+    context 'when API is blocked and HTML does not contain vehicle data' do
+      before do
+        stub_request(:get, api_url).to_return(status: 403)
+
+        stub_request(:get, url)
+          .to_return(status: 200, body: '<html><body>blocked</body></html>')
+      end
+
+      it 'raises a controlled scraping error' do
+        expect {
+          described_class.call(url)
+        }.to raise_error(RuntimeError, /Dados do veiculo nao encontrados/)
+      end
+    end
+
+    context 'when HTTP request fails' do
+      before do
+        stub_request(:get, api_url).to_timeout
       end
 
       it 'raises an error' do
         expect {
           described_class.call(url)
-        }.to raise_error(StandardError, /Net::ReadTimeout/)
-      end
-    end
-
-    context 'when HTML is missing elements (Blocked or Changed)' do
-      before do
-        allow(browser).to receive(:evaluate).with(include('__NEXT_DATA__')).and_return(nil)
-      end
-
-      it 'raises a specific extraction error' do
-        expect {
-          described_class.call(url)
-        }.to raise_error(RuntimeError, /Elemento __NEXT_DATA__ nao encontrado/)
+        }.to raise_error(StandardError)
       end
     end
   end
