@@ -10,6 +10,7 @@ RSpec.describe ScrapingJob, type: :job do
     allow(Scraper::Webmotors).to receive(:call).with(url).and_return(scraped_data)
     allow(Notifications::Client).to receive(:task_completed)
     allow(Notifications::Client).to receive(:task_failed)
+    allow(Manager::Client).to receive(:update_status)
   end
 
   describe '#perform' do
@@ -23,6 +24,7 @@ RSpec.describe ScrapingJob, type: :job do
       expect(vehicle.task_id).to eq(task_id)
 
       expect(Notifications::Client).to have_received(:task_completed).with(task_id, vehicle)
+      expect(Manager::Client).to have_received(:update_status).with(task_id, 'completed', anything)
     end
 
     context 'when scraping fails' do
@@ -36,6 +38,7 @@ RSpec.describe ScrapingJob, type: :job do
         }.not_to change(ScrapedVehicle, :count)
 
         expect(Notifications::Client).to have_received(:task_failed).with(task_id, "HTML mudou")
+        expect(Manager::Client).to have_received(:update_status).with(task_id, 'failed', hash_including(error_message: "HTML mudou"))
       end
     end
   end
