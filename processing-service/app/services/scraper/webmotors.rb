@@ -9,11 +9,24 @@ module Scraper
         browser_options: {
           'no-sandbox': nil,
           'disable-gpu': nil,
-          'disable-dev-shm-usage': nil
+          'disable-dev-shm-usage': nil,
+          'disable-blink-features': 'AutomationControlled', 
+          'window-size': '1920,1080',
+          'start-maximized': nil
         },
-        headless: true,
-        timeout: 30
+        headless: true, 
+        timeout: 60 
       )
+
+      browser.headers.add({
+        "User-Agent" => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
+        "Accept" => "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+        "Accept-Language" => "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
+        "sec-ch-ua" => '"Not A(Brand";v="99", "Google Chrome";v="121", "Chromium";v="121"',
+        "sec-ch-ua-mobile" => "?0",
+        "sec-ch-ua-platform" => '"macOS"',
+        "Upgrade-Insecure-Requests" => "1"
+      })
 
       begin
         browser.go_to(url)
