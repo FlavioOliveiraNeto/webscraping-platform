@@ -19,7 +19,7 @@ Pré-requisitos: **Docker** e **Docker Compose** instalados.
 1.  Clone o repositório:
 
     ```bash
-    git clone <seu-repo-url>
+    git clone https://github.com/FlavioOliveiraNeto/webscraping-platform
     cd webscraping-platform
     ```
 
