@@ -38,6 +38,18 @@ class ScrapingTasksController < ApplicationController
     end
   end
 
+  def destroy
+    result = Manager::Client.delete_task(current_token, params[:id])
+
+    if result[:success]
+      flash[:notice] = "Tarefa excluída com sucesso."
+    else
+      flash[:alert] = result[:error] || "Não foi possível excluir a tarefa."
+    end
+
+    redirect_to scraping_tasks_path, status: :see_other
+  end
+
   private
 
   def handle_api_error(result)

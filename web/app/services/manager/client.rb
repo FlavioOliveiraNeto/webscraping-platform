@@ -52,6 +52,21 @@ module Manager
       { success: false, error: "Manager service unavailable" }
     end
 
+    def self.delete_task(token, id)
+      response = connection.delete("/api/scraping_tasks/#{id}") do |req|
+        req.headers["Authorization"] = "Bearer #{token}"
+      end
+
+      if response.success?
+        { success: true }
+      else
+        error_body(response)
+      end
+    rescue Faraday::Error => e
+      Rails.logger.error("Manager service error: #{e.message}")
+      { success: false, error: "Manager service unavailable" }
+    end
+
     def self.connection
       Faraday.new(url: BASE_URL) do |f|
         f.options.timeout = 15

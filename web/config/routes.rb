@@ -9,7 +9,7 @@ Rails.application.routes.draw do
   post "signup", to: "registrations#create"
 
   # Tarefas de scraping
-  resources :scraping_tasks, only: [ :index, :new, :create, :show ]
+  resources :scraping_tasks, only: [ :index, :new, :create, :show, :destroy ]
 
   # Raiz
   root "scraping_tasks#index"

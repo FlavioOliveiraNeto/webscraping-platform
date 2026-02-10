@@ -32,5 +32,14 @@ module Api
         render json: { error: 'Task not found' }, status: :not_found
       end
     end
+
+    def destroy
+      task = ScrapingTask.find_by(id: params[:id], user_id: current_user['user_id'])
+      if task&.destroy
+        head :no_content
+      else
+        render json: { error: 'Task not found' }, status: :not_found
+      end
+    end
   end
 end
