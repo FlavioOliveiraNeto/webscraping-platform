@@ -1,8 +1,5 @@
 ### Auth Service
 
-````markdown
-# Auth Service
-
 Microsserviço dedicado exclusivamente à gestão de identidade, registro de usuários e autenticação.
 
 ## Funcionamento
@@ -26,4 +23,3 @@ Todos os outros serviços da malha (Manager, Web) compartilham a mesma `JWT_SECR
 ```bash
 docker-compose exec auth-service bundle exec rspec
 ```
-````
