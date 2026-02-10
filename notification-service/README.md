@@ -1,7 +1,5 @@
 ### Notification Service
 
-# Notification Service
-
 Serviço de auditoria e registro de eventos. Ele atua como um "Observer" do sistema, armazenando logs de ações importantes para histórico.
 
 ## Eventos Registrados
