@@ -1,24 +1,32 @@
-# README
+### Web Frontend
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+````markdown
+# Web Frontend
 
-Things you may want to cover:
+Interface gráfica desenvolvida em **Ruby on Rails 8 (Fullstack)** utilizando **Bootstrap 5**.
 
-* Ruby version
+## Visão Geral
 
-* System dependencies
+Este projeto atua como um cliente HTTP (Backend for Frontend) que consome os microsserviços. Ele não possui banco de dados próprio para regras de negócio, apenas consome as APIs.
 
-* Configuration
+## Funcionalidades
 
-* Database creation
+- **Login/Cadastro:** Consome o `auth-service` e gerencia a sessão do usuário via Cookies/Session Storage.
+- **Dashboard:** Consome o `webscraping-manager` para listar tarefas.
+- **Live Updates:** A interface está preparada para exibir os status das tarefas (Pendente -> Processando -> Concluído/Falha).
 
-* Database initialization
+## Tecnologias
 
-* How to run the test suite
+- **Framework:** Rails 8.0.1
+- **CSS:** Bootstrap 5 (via Importmap/CDN)
+- **Ícones:** Bootstrap Icons
+- **HTTP Client:** Services Objects encapsulando chamadas de API.
 
-* Services (job queues, cache servers, search engines, etc.)
+## Testes
 
-* Deployment instructions
+Testes de Request e System (se aplicável) para garantir a integração com os serviços.
 
-* ...
+```bash
+docker-compose exec web bundle exec rspec
+```
+````

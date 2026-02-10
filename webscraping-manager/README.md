@@ -1,24 +1,40 @@
-# README
+### Webscraping Manager
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+````markdown
+# Webscraping Manager Service
 
-Things you may want to cover:
+O núcleo da plataforma. Este microsserviço gerencia o ciclo de vida das tarefas (`ScrapingTask`), orquestra a comunicação com o worker e armazena os resultados finais.
 
-* Ruby version
+## Funcionalidades
 
-* System dependencies
+- **Gestão de Tarefas:** Criação, leitura e exclusão de tarefas.
+- **Orquestração:** Ao criar uma tarefa, delega automaticamente o processamento para o `processing-service`.
+- **Callbacks:** Recebe atualizações de status (sucesso/falha) do worker via Webhooks.
+- **Validação:** Garante que apenas URLs válidas da Webmotors sejam processadas.
 
-* Configuration
+## API Endpoints
 
-* Database creation
+### Tarefas
 
-* Database initialization
+- `GET /api/scraping_tasks` - Lista todas as tarefas do usuário.
+- `POST /api/scraping_tasks` - Cria uma nova tarefa.
+- `GET /api/scraping_tasks/:id` - Exibe o resultado (Marca, Modelo, Preço).
+- `DELETE /api/scraping_tasks/:id` - Exclui uma tarefa.
 
-* How to run the test suite
+### Callbacks (Sistema)
 
-* Services (job queues, cache servers, search engines, etc.)
+- `POST /api/callbacks/update_task`
+  - Endpoint utilizado pelo `processing-service` para enviar o JSON com os dados do veículo ou mensagem de erro.
 
-* Deployment instructions
+## Variáveis de Ambiente
 
-* ...
+- `JWT_SECRET`: Chave para validar tokens do `auth-service`.
+- `PROCESSING_SERVICE_URL`: Endereço do worker.
+- `NOTIFICATION_SERVICE_URL`: Endereço do serviço de logs.
+
+## Testes
+
+```bash
+docker-compose exec webscraping-manager bundle exec rspec
+```
+````

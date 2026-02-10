@@ -1,24 +1,26 @@
-# README
+### Notification Service
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+````markdown
+# Notification Service
 
-Things you may want to cover:
+Serviço de auditoria e registro de eventos. Ele atua como um "Observer" do sistema, armazenando logs de ações importantes para histórico.
 
-* Ruby version
+## Eventos Registrados
 
-* System dependencies
+O sistema armazena payload JSON para os seguintes eventos:
 
-* Configuration
+- `task_created`: Quando um usuário solicita um scraping.
+- `task_completed`: Quando o dados são extraídos com sucesso.
+- `task_failed`: Quando ocorre erro (ex: Página não encontrada, Bloqueio de API).
 
-* Database creation
+## API Endpoints
 
-* Database initialization
+- **POST `/api/notifications`**
+  - Recebe eventos de qualquer microsserviço da plataforma.
 
-* How to run the test suite
+## Testes
 
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+```bash
+docker-compose exec notification-service bundle exec rspec
+```
+````

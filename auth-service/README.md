@@ -1,24 +1,29 @@
-# README
+### Auth Service
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+````markdown
+# Auth Service
 
-Things you may want to cover:
+Microsserviço dedicado exclusivamente à gestão de identidade, registro de usuários e autenticação.
 
-* Ruby version
+## Funcionamento
 
-* System dependencies
+O serviço utiliza a gem `jwt` para gerar tokens assinados. A arquitetura segue o padrão de **banco de dados de usuários segregado**, garantindo que as credenciais fiquem isoladas dos dados de negócio.
 
-* Configuration
+## API Endpoints
 
-* Database creation
+- **POST `/api/registrations`**
+  - Cria um novo usuário.
+  - Params: `email`, `password`, `password_confirmation`.
+- **POST `/api/sessions`**
+  - Autentica um usuário e retorna um Bearer Token JWT.
 
-* Database initialization
+## Segurança
 
-* How to run the test suite
+Todos os outros serviços da malha (Manager, Web) compartilham a mesma `JWT_SECRET` definida no `docker-compose.yml`, permitindo que eles validem a autenticidade do token sem precisar consultar este serviço a cada requisição (Stateless Authentication).
 
-* Services (job queues, cache servers, search engines, etc.)
+## Testes
 
-* Deployment instructions
-
-* ...
+```bash
+docker-compose exec auth-service bundle exec rspec
+```
+````

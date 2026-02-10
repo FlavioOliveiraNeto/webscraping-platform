@@ -1,28 +1,53 @@
-# Web Scraping Microservices Platform
+# Webscraping Platform - Microservices
 
-Solução distribuída para gerenciamento e execução de scraping de veículos (Webmotors), desenvolvida com foco em desacoplamento, robustez e escalabilidade.
+Este repositório contém uma plataforma distribuída para coleta de dados de veículos (Web Scraping), construída com arquitetura de microsserviços utilizando Ruby on Rails 8, Docker e comunicação assíncrona.
 
 ## Arquitetura
 
-O sistema foi dividido em 4 microsserviços especializados:
+O sistema é composto por 5 containers principais orquestrados via Docker Compose:
 
-1.  **Auth Service (Porta 3001):** Responsável pela identificação única e emissão de JWT.
-2.  **Webscraping Manager (Porta 3000):** API Gateway principal. Gerencia tarefas, valida permissões e orquestra o fluxo.
-3.  **Processing Service (Crawler):** Executa o scraping via Nokogiri de forma assíncrona e resiliente.
-4.  **Notification Service (Porta 3002):** Centraliza logs de eventos e auditoria do sistema.
+1.  **Web (Frontend):** Interface visual para o usuário gerenciar tarefas.
+2.  **Webscraping Manager:** API central que gerencia tarefas e orquestra o fluxo.
+3.  **Auth Service:** Microsserviço dedicado a autenticação JWT.
+4.  **Processing Service:** Microsserviço responsável pela execução do scraping (HTTParty + Nokogiri).
+5.  **Notification Service:** Microsserviço para centralizar logs e notificações de eventos.
 
-### Decisões Técnicas
+## Como Executar (Quick Start)
 
-- **Autenticação Stateless:** Utilização de JWT com _Shared Secret_ para evitar chamadas HTTP desnecessárias na validação de tokens.
-- **Assincronismo:** Uso intensivo de **Sidekiq + Redis** para evitar bloqueio da thread principal durante o scraping e orquestração.
-- **Resiliência:** Implementação de `retries` no Sidekiq e tratamento defensivo no Nokogiri (Webmotors muda o HTML frequentemente).
-- **Infraestrutura:** Docker Compose gerenciando bancos de dados isolados, Redis e Workers dedicados.
+Pré-requisitos: **Docker** e **Docker Compose** instalados.
 
-## Como Executar
+1.  Clone o repositório:
 
-Pré-requisito: Docker e Docker Compose instalados.
+    ```bash
+    git clone <seu-repo-url>
+    cd webscraping-platform
+    ```
 
-1. **Subir o ambiente** (Isso irá buildar as imagens, criar os bancos e rodar as migrations automaticamente):
-   ```bash
-   docker-compose up --build
-   ```
+2.  Suba todo o ambiente com um único comando:
+
+    ```bash
+    docker-compose up --build
+    ```
+
+3.  Acesse a aplicação no navegador:
+    - **Frontend:** [http://localhost:8080](http://localhost:8080)
+
+## Serviços e Portas
+
+| Serviço                | Responsabilidade                | Porta Externa |
+| :--------------------- | :------------------------------ | :------------ |
+| `web`                  | Frontend (Rails MVC)            | 8080          |
+| `webscraping-manager`  | API Principal / Gestão de Tasks | 3000          |
+| `auth-service`         | Autenticação e Usuários         | 3001          |
+| `notification-service` | Notificações                    | 3002          |
+| `processing-service`   | Scraping Engine (Interno)       | N/A           |
+
+## Executando os Testes
+
+Para rodar a suíte de testes (RSpec) em todos os serviços:
+
+```bash
+# Rodar todos os testes de uma vez (opcional)
+docker-compose exec processing-service bundle exec rspec
+# Repita para os outros serviços conforme necessário
+```
